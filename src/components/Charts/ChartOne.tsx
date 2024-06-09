@@ -126,12 +126,12 @@ const ChartOne: React.FC = () => {
   const [state, setState] = useState<ChartOneState>({
     series: [
       {
-        name: "Product One",
+        name: "Temperature",
         data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
       },
 
       {
-        name: "Product Two",
+        name: "Humidity",
         data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
       },
     ],
@@ -153,8 +153,8 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-primary">Humidity</p>
+              {/* <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p> */}
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -162,8 +162,8 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-secondary">Temperature</p>
+              {/* <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p> */}
             </div>
           </div>
         </div>
@@ -172,12 +172,7 @@ const ChartOne: React.FC = () => {
             <button className="rounded bg-white px-3 py-1 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
               Day
             </button>
-            <button className="rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Week
-            </button>
-            <button className="rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Month
-            </button>
+           
           </div>
         </div>
       </div>

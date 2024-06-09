@@ -1,18 +1,23 @@
-import Calendar from "@/components/Calender";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { LeftContent } from "@/components/Calender/LeftContent";
+import { RightContent } from "@/components/Calender/RightContent";
+import SmallPaddingLayout from "@/components/Layouts/SmallPaddingLayout";
 
 export const metadata: Metadata = {
-  title: "Next.js Calender | TailAdmin - Next.js Dashboard Template",
+  title: "Calendar",
   description:
-    "This is Next.js Calender page for TailAdmin  Tailwind CSS Admin Dashboard Template",
+    "This is Calendar",
 };
 
 const CalendarPage = () => {
   return (
-    <DefaultLayout>
-      <Calendar />
-    </DefaultLayout>
+    <SmallPaddingLayout>
+      <div className="flex items-start justify-start gap-[24px]">
+        <div className="w-[400px]  h-auto"><LeftContent/></div>
+        <div className="w-full overflow-y-scroll p-[24px] bg-[white]"><RightContent/></div>
+      </div>
+    </SmallPaddingLayout>
   );
 };
 
