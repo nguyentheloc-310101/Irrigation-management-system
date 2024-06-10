@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
     "antd": "^5.18.0",
     "apexcharts": "^3.49.1",
     "autoprefixer": "^10.4.19",
@@ -16,10 +17,10 @@
     "jsvectormap": "^1.5.3",
     "mqtt": "^5.7.0",
     "next": "^14.2.3",
-    "prettier-plugin-tailwindcss": "^0.6.2",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.3.1",
+    "supabase": "^1.172.2",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
