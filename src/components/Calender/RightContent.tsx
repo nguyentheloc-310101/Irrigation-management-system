@@ -1,75 +1,321 @@
-'use client'
-import React from 'react';
-import type { BadgeProps, CalendarProps } from 'antd';
-import { Badge, Calendar } from 'antd';
-import type { Dayjs } from 'dayjs';
+'use client';
+import SchedulerServices from '@/services/class/scheduler/scheduler-services';
+import { Badge, Card, Drawer, Table, message } from 'antd';
+import { useEffect, useState } from 'react';
+import TableSkeleton from '../common/skeleton/TableSkeleton';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
-const getListData = (value: Dayjs) => {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-        { type: 'error', content: 'This is error event.' },
-      ];
-      break;
-    case 15:
-      listData = [
-        { type: 'warning', content: 'This is warning event' },
-        { type: 'success', content: 'This is very long usual event......' },
-        { type: 'error', content: 'This is error event 1.' },
-        { type: 'error', content: 'This is error event 2.' },
-        { type: 'error', content: 'This is error event 3.' },
-        { type: 'error', content: 'This is error event 4.' },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
+// interface IRightContent {
+//   loading: boolean;
+//   dataSource: SchedulerIrrigation[];
+// }
+export const RightContent = () => {
+  const columns = [
+    {
+      title: 'Monday',
+      dataIndex: 'Monday',
+      width: 200,
+      key: 'monday',
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Monday);
+          },
+        };
+      },
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1 gap-[24px]">
+          {record?.Monday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Tuesday',
+      dataIndex: 'Tuesday',
+      key: 'tuesday',
+      width: 200,
+
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Tuesday);
+          },
+        };
+      },
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1">
+          {record?.Tuesday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Wednesday',
+      dataIndex: 'Wednesday',
+      width: 200,
+
+      key: 'wednesday',
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Wednesday);
+          },
+        };
+      },
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1">
+          {record?.Wednesday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Thursday',
+      dataIndex: 'Thursday',
+      key: 'thursday',
+      width: 200,
+
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Thursday);
+          },
+        };
+      },
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1">
+          {record?.Thursday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Friday',
+      dataIndex: 'Friday',
+      width: 200,
+
+      key: 'friday',
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Friday);
+          },
+        };
+      },
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1">
+          {record?.Friday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Saturday',
+      dataIndex: 'Saturday',
+      width: 200,
+
+      key: 'saturday',
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Saturday);
+          },
+        };
+      },
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1">
+          {record?.Saturday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+    {
+      title: 'Sunday',
+      dataIndex: 'Sunday',
+      width: 200,
+
+      onCell: (record: any, rowIndex: any) => {
+        return {
+          onClick: (ev: any) => {
+            handleClickCell(record?.Sunday);
+          },
+        };
+      },
+      key: 'sunday',
+      render: (_: any, record: any) => (
+        <div className="grid grid-cols-1">
+          {record?.Sunday?.items?.map((item: any) => {
+            return (
+              <StatusScheduler
+                key={item?.id}
+                isActive={item?.isActive}
+                name={item?.name}
+              />
+            );
+          })}
+        </div>
+      ),
+    },
+  ];
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataSource, setDataSource] = useState<any[]>([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectDay, setSelectDay] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchScheduler = async () => {
+      try {
+        const { data, error } = await SchedulerServices.getAllScheduler();
+        if (error) {
+          message.error(error.message);
+          setLoading(false);
+        } else {
+          const groupedData = groupDataByDate(data as any);
+          setDataSource([groupedData]);
+          console.log([groupedData]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchScheduler();
+  }, []);
+  const handleClickCell = (record: any) => {
+    setOpenDrawer(true);
+    setSelectDay(record);
+  };
+  const groupDataByDate = (
+    data: any[]
+  ): { [key: string]: { items: any[] } } => {
+    // Initialize an empty object to store grouped data
+    const groupedData: { [key: string]: { items: any[] } } = {};
+
+    // Group the data by date
+    data.forEach((item) => {
+      if (!groupedData[item.date]) {
+        groupedData[item.date] = { items: [] };
+      }
+      groupedData[item.date].items.push(item);
+    });
+
+    // Ensure each day has an object even if there's no data
+    const daysOfTheWeek = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    daysOfTheWeek.forEach((day) => {
+      if (!groupedData[day]) {
+        groupedData[day] = { items: [] };
+      }
+    });
+
+    return groupedData;
+  };
+
+  return (
+    <>
+      <Drawer
+        title="Details Irrigation schedule"
+        onClose={() => {
+          setOpenDrawer(false);
+        }}
+        open={openDrawer}>
+        <div className="grid grid-cols-1 gap-[24px]">
+          {selectDay?.items?.map((item: any) => {
+            return (
+              <Card
+                title={
+                  <div className="flex items-center justify-between">
+                    <p>{item?.name}</p>
+                    <div className="flex gap-[4px]">
+                      <EditOutlined className=" cursor-pointer" />
+                      <DeleteOutlined className="text-[red] cursor-pointer" />
+                    </div>
+                  </div>
+                }
+                key={item?.id}>
+                <>{item?.name}</>
+              </Card>
+            );
+          })}
+        </div>
+      </Drawer>
+      <TableSkeleton
+        columns={columns}
+        loading={loading}>
+        <Table
+          className="cursor-pointer "
+          columns={columns}
+          bordered
+          dataSource={dataSource}
+          scroll={{
+            x: 1200,
+            // y: `calc(100vh - 10rem)`,
+          }}
+        />
+      </TableSkeleton>
+    </>
+  );
 };
 
-const getMonthData = (value: Dayjs) => {
-  if (value.month() === 8) {
-    return 1394;
-  }
-};
-
-export const RightContent: React.FC = () => {
-  const monthCellRender = (value: Dayjs) => {
-    const num = getMonthData(value);
-    return num ? (
-      <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null;
-  };
-
-  const dateCellRender = (value: Dayjs) => {
-    const listData = getListData(value);
-    return (
-      <ul className="events">
-        {listData.map((item) => (
-          <li key={item.content}>
-            <Badge status={item.type as BadgeProps['status']} text={item.content} />
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
-    if (info.type === 'date') return dateCellRender(current);
-    if (info.type === 'month') return monthCellRender(current);
-    return info.originNode;
-  };
-
-  return <div ><Calendar cellRender={cellRender} /></div>;
+interface IStatusSchedulerProps {
+  isActive: boolean;
+  name: string;
+}
+const StatusScheduler = ({ isActive, name }: IStatusSchedulerProps) => {
+  return (
+    <Badge
+      status={isActive ? 'success' : 'error'}
+      text={name}
+    />
+  );
 };

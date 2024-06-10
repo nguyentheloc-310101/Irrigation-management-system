@@ -7,7 +7,6 @@ import { CalendarOutlined } from '@ant-design/icons';
 
 export const LeftContent = () => {
   const router = useRouter();
-
   const [openCreate, setOpenCreate] = useState<boolean>(false);
 
   return (

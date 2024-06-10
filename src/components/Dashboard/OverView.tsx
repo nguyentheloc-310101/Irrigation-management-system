@@ -1,39 +1,54 @@
-"use client";
-import React from "react";
-import ChartOne from "../Charts/ChartOne";
-import ChartThree from "../Charts/ChartThree";
-import ChartTwo from "../Charts/ChartTwo";
-import ChatCard from "../Chat/ChatCard";
-import TableOne from "../Tables/TableOne";
-import CardDataStats from "../CardDataStats";
-import MapOne from "../Maps/MapOne";
+'use client';
+import React from 'react';
+import ChartOne from '../Charts/ChartOne';
+import ChartThree from '../Charts/ChartThree';
+import ChartTwo from '../Charts/ChartTwo';
+import ChatCard from '../Chat/ChatCard';
+import TableOne from '../Tables/TableOne';
+import CardDataStats from '../CardDataStats';
+import MapOne from '../Maps/MapOne';
 import {
   MoonOutlined,
-SunOutlined,
-ThunderboltOutlined
+  SunOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 const OverviewPage: React.FC = () => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Temperature" total="30" rate="0.43%" levelUp>
-         <SunOutlined className="text-[#3C50E0]"/>
+        <CardDataStats
+          title="Temperature"
+          total="30"
+          rate="0.43%"
+          levelUp>
+          <SunOutlined className="text-[#3C50E0]" />
         </CardDataStats>
-        <CardDataStats title="Humidity" total="200%" rate="4.35%" levelDown>
-         <MoonOutlined className="text-[#3C50E0]" />
+        <CardDataStats
+          title="Humidity"
+          total="200%"
+          rate="4.35%"
+          levelDown>
+          <MoonOutlined className="text-[#3C50E0]" />
         </CardDataStats>
-        <CardDataStats title="Light" total="2.450" rate="2.59%" levelUp>
-          <ThunderboltOutlined className="text-[#3C50E0]"/>
+        <CardDataStats
+          title="Moisture"
+          total="2.450"
+          rate="2.59%"
+          levelUp>
+          <ThunderboltOutlined className="text-[#3C50E0]" />
         </CardDataStats>
-        <CardDataStats title="Other data" total="3.456" rate="0.95%" levelDown>
+        <CardDataStats
+          title="Other data"
+          total="3.456"
+          rate="0.95%"
+          levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
             height="18"
             viewBox="0 0 22 18"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+            xmlns="http://www.w3.org/2000/svg">
             <path
               d="M7.18418 8.03751C9.31543 8.03751 11.0686 6.35313 11.0686 4.25626C11.0686 2.15938 9.31543 0.475006 7.18418 0.475006C5.05293 0.475006 3.2998 2.15938 3.2998 4.25626C3.2998 6.35313 5.05293 8.03751 7.18418 8.03751ZM7.18418 2.05626C8.45605 2.05626 9.52168 3.05313 9.52168 4.29063C9.52168 5.52813 8.49043 6.52501 7.18418 6.52501C5.87793 6.52501 4.84668 5.52813 4.84668 4.29063C4.84668 3.05313 5.9123 2.05626 7.18418 2.05626Z"
               fill=""

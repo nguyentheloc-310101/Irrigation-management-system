@@ -15,7 +15,7 @@ const CalendarPage = () => {
         <div className="w-[400px]  h-auto">
           <LeftContent />
         </div>
-        <div className="w-full overflow-y-scroll p-[24px] bg-[white]">
+        <div className="w-full overflow-y-hidden p-[24px] bg-[white]">
           <RightContent />
         </div>
       </div>

@@ -1,9 +1,14 @@
-export type SchedulerIrrigation ={
-    name:string;
-    nitrogen:number;
-    phosphorus:number;
-    potassium:number;
-    area:number;
-    start:string;
-    end:string;
-}
+export type SchedulerIrrigation = {
+  frequency: string;
+  action: 'Create' | 'Edit' | 'Delete';
+  cycle: number;
+  name: string;
+  isActive: any;
+  mixer1: number;
+  mixer2: number;
+  date: string;
+  mixer3: number;
+  area: number;
+  startTime: string;
+  endTime: string;
+};
