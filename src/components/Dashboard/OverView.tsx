@@ -1,38 +1,96 @@
 'use client';
-import React from 'react';
-import ChartOne from '../Charts/ChartOne';
-import ChartThree from '../Charts/ChartThree';
-import ChartTwo from '../Charts/ChartTwo';
-import ChatCard from '../Chat/ChatCard';
-import TableOne from '../Tables/TableOne';
-import CardDataStats from '../CardDataStats';
-import MapOne from '../Maps/MapOne';
 import {
   MoonOutlined,
   SunOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import CardDataStats from '../CardDataStats';
+import ChartOne from '../Charts/ChartOne';
+import ChartTwo from '../Charts/ChartTwo';
+import { clientMqtt } from '@/services/mqtt-client/mqtt';
 const OverviewPage: React.FC = () => {
+  const [humidity, setHumidity] = useState<any>(0);
+  const [temperature, setTemperature] = useState<any>(0);
+  const [moisture, setMoisture] = useState<any>(0);
+
+  useEffect(() => {
+    const fetchInitData = async () => {
+      const resHumid = await fetch(process.env.HUMID_ADAFRUIT as string);
+      const resTemp = await fetch(process.env.TEMPERATURE_ADAFRUIT as string);
+      const resMoisture = await fetch(process.env.MOISTURE_ADAFRUIT as string);
+
+      if (resHumid) {
+        const jsonData = await resHumid.json();
+        setHumidity(jsonData?.last_value);
+      }
+      if (resTemp) {
+        const jsonData = await resTemp.json();
+        setMoisture(jsonData?.last_value);
+      }
+      if (resMoisture) {
+        const jsonData = await resMoisture.json();
+        setMoisture(jsonData?.last_value);
+      }
+    };
+    fetchInitData();
+  }, []);
+
+  useEffect(() => {
+    clientMqtt.on('connect', () => {
+      console.log('Connected');
+
+      clientMqtt.subscribe('kd77/feeds/humidity');
+      clientMqtt.subscribe('kd77/feeds/temperature');
+      clientMqtt.subscribe('kd77/feeds/moisture');
+    });
+
+    clientMqtt.on('message', (topic, message) => {
+      console.log(
+        `Received message from topic ${topic}: ${message.toString()}`
+      );
+      if (topic == 'kd77/feeds/humidity') {
+        setHumidity(message.toString());
+      }
+      if (topic == 'kd77/feeds/temperature') {
+        setTemperature(message.toString());
+      }
+    });
+
+    clientMqtt.on('error', (err) => {
+      console.error('Connection error:', err);
+    });
+
+    clientMqtt.on('close', () => {
+      console.log('Connection closed');
+    });
+
+    return () => {
+      if (clientMqtt.connected) {
+        clientMqtt.end();
+      }
+    };
+  }, []);
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
           title="Temperature"
-          total="30"
+          total={temperature}
           rate="0.43%"
           levelUp>
           <SunOutlined className="text-[#3C50E0]" />
         </CardDataStats>
         <CardDataStats
           title="Humidity"
-          total="200%"
+          total={humidity}
           rate="4.35%"
           levelDown>
           <MoonOutlined className="text-[#3C50E0]" />
         </CardDataStats>
         <CardDataStats
           title="Moisture"
-          total="2.450"
+          total={moisture}
           rate="2.59%"
           levelUp>
           <ThunderboltOutlined className="text-[#3C50E0]" />
