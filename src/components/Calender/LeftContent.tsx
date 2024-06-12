@@ -1,5 +1,5 @@
 'use client';
-import { App, Button, Card, notification } from 'antd';
+import { App, Badge, Button, Card, Divider, notification } from 'antd';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { ModalCreate } from './ModalCreate';
@@ -37,16 +37,28 @@ export const LeftContent = () => {
             Upcoming events
           </div>
         }>
-        {' '}
-        <span
+        <Badge
+          status="success"
+          text="Today, 23:00 - 23:15"
+        />
+        <p className="ml-[24px] font-bold">Rose watering</p>
+        <Divider className="my-[10px]" />
+        <Badge
+          status="success"
+          text="Today, 23:15 - 23:30"
+        />
+        <p className="ml-[24px] font-bold">Sunflower watering</p>
+        <Divider className="my-[10px]" />
+
+        {/* <span
           style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             height: '220px',
           }}>
-          No Upcoming Event
-        </span>
+         
+        </span> */}
       </Card>
     </div>
   );

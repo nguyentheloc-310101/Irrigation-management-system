@@ -1,9 +1,28 @@
 'use client';
 import SchedulerServices from '@/services/class/scheduler/scheduler-services';
-import { Badge, Card, Drawer, Table, message } from 'antd';
+import {
+  Badge,
+  Card,
+  Divider,
+  Drawer,
+  Modal,
+  Popconfirm,
+  Table,
+  Tag,
+  Tooltip,
+  message,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import TableSkeleton from '../common/skeleton/TableSkeleton';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
+import { ItemInfo } from '../common/item-information/ItemInfor';
+import { ModalEdit } from './ModalEdit';
+import { SchedulerIrrigation } from '@/types/scheduler';
+import { clientMqtt } from '@/services/mqtt-client/mqtt';
 
 // interface IRightContent {
 //   loading: boolean;
@@ -202,10 +221,26 @@ export const RightContent = () => {
   ];
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [activeEdit, setActiveEdit] = useState<boolean>(false);
+
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectDay, setSelectDay] = useState<any>(null);
-
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  useEffect(() => {
+    const formatDaySelect = () => {
+      if (!selectDay) {
+        return;
+      }
+      selectDay.items.sort((a: any, b: any) => {
+        if (a.startTime < b.startTime) return -1;
+        if (a.startTime > b.startTime) return 1;
+        return 0;
+      });
+      setSelectDay(selectDay);
+    };
+    formatDaySelect();
+  }, [selectDay]);
   useEffect(() => {
     const fetchScheduler = async () => {
       try {
@@ -260,11 +295,46 @@ export const RightContent = () => {
 
     return groupedData;
   };
+  const deleteScheduler = async (id: string, item: any) => {
+    try {
+      const { error } = await SchedulerServices.deleteScheduler(id);
+      if (error) {
+        message.warning(error.message);
+      } else {
+        const dataMqtt: SchedulerIrrigation = {
+          action: 'Delete',
+          area: item?.area,
+          isActive: item?.isActive,
+          cycle: Number(item?.cycle),
+          frequency: item?.frequency,
+          date: item?.date,
+          name: item?.name,
+          mixer1: Number(item?.mixer1),
+          mixer2: Number(item?.mixer2),
+          mixer3: Number(item?.mixer3),
+          startTime: item?.startTime,
+          endTime: item?.endTime,
+        };
+        const jsonStringData = JSON.stringify(dataMqtt);
+        clientMqtt.publish('kd77/feeds/scheduler', jsonStringData);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <>
+      {activeEdit && (
+        <ModalEdit
+          open={activeEdit}
+          setOpen={setActiveEdit}
+          selectedRecord={selectedRecord}
+        />
+      )}
       <Drawer
         title="Details Irrigation schedule"
+        width={400}
         onClose={() => {
           setOpenDrawer(false);
         }}
@@ -273,17 +343,92 @@ export const RightContent = () => {
           {selectDay?.items?.map((item: any) => {
             return (
               <Card
+                className="shadow-box-custom"
+                bordered
                 title={
                   <div className="flex items-center justify-between">
-                    <p>{item?.name}</p>
+                    <div className="flex items-center justify-start gap-[12px]">
+                      <p>{item?.name}</p>
+                      <Tag color={item?.isActive ? 'blue' : 'red'}>
+                        {item?.isActive ? 'Active' : 'Inactive'}
+                      </Tag>
+                    </div>
                     <div className="flex gap-[4px]">
-                      <EditOutlined className=" cursor-pointer" />
-                      <DeleteOutlined className="text-[red] cursor-pointer" />
+                      <Tooltip title="Edit">
+                        <EditOutlined
+                          className=" cursor-pointer"
+                          onClick={() => {
+                            setSelectedRecord(item);
+                            setActiveEdit(true);
+                          }}
+                        />
+                      </Tooltip>
+
+                      <Popconfirm
+                        title="Delete"
+                        onConfirm={() => {
+                          deleteScheduler(item?.id, item);
+                        }}
+                        description="Are you sure to delete this scheduler?"
+                        icon={
+                          <QuestionCircleOutlined style={{ color: 'red' }} />
+                        }>
+                        <Tooltip title="Delete">
+                          <DeleteOutlined className="text-[red] cursor-pointer" />
+                        </Tooltip>
+                      </Popconfirm>
                     </div>
                   </div>
                 }
                 key={item?.id}>
-                <>{item?.name}</>
+                <>
+                  <ItemInfo
+                    label={'Name'}
+                    info={<div className="">{item?.name}</div>}
+                  />
+                  <Divider className="my-[10px]" />
+                  <ItemInfo
+                    label={'Date & Time'}
+                    info={
+                      <div className="">
+                        {item?.date +
+                          ', ' +
+                          item?.startTime +
+                          ' - ' +
+                          item?.endTime}
+                      </div>
+                    }
+                  />
+                  <Divider className="my-[10px]" />
+                  <ItemInfo
+                    label={'Mixer [1,2,3]'}
+                    info={
+                      <div className="">
+                        {item?.mixer1 +
+                          ', ' +
+                          item?.mixer2 +
+                          ', ' +
+                          item?.mixer3}
+                      </div>
+                    }
+                  />
+                  <Divider className="my-[10px]" />
+                  <ItemInfo
+                    label={'Area'}
+                    info={<div className="">{item?.area}</div>}
+                  />
+                  <Divider className="my-[10px]" />
+                  <ItemInfo
+                    label={'Cycle'}
+                    info={<div className="">{item?.cycle}</div>}
+                  />
+                  <Divider className="my-[10px]" />
+                  <ItemInfo
+                    label={'frequency'}
+                    info={<div className="">{item?.frequency}</div>}
+                  />
+                  <Divider className="my-[10px]" />
+                </>
               </Card>
             );
           })}

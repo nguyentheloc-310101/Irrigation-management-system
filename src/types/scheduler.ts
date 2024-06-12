@@ -1,6 +1,7 @@
 export type SchedulerIrrigation = {
+  id?: string;
   frequency: string;
-  action: 'Create' | 'Edit' | 'Delete';
+  action: string;
   cycle: number;
   name: string;
   isActive: any;

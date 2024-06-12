@@ -16,5 +16,30 @@ class SchedulerServices {
     }
     return { data, error };
   }
+  static async editScheduler(value: SchedulerIrrigation) {
+    const { data, error } = await supabase
+      .from('scheduler')
+      .update({
+        frequency: value.frequency,
+        action: value.action,
+        cycle: value.cycle,
+        name: value.name,
+        isActive: value.isActive,
+        mixer1: value.mixer1,
+        mixer2: value.mixer2,
+        date: value.date,
+        mixer3: value.mixer3,
+        area: value.area,
+        startTime: value.startTime,
+        endTime: value.endTime,
+      })
+      .eq('id', value?.id)
+      .select();
+    return { data, error };
+  }
+  static async deleteScheduler(id: string) {
+    const { error } = await supabase.from('scheduler').delete().eq('id', id);
+    return { error };
+  }
 }
 export default SchedulerServices;
