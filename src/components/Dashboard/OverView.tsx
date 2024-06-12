@@ -10,57 +10,60 @@ import ChartOne from '../Charts/ChartOne';
 import ChartTwo from '../Charts/ChartTwo';
 import { clientMqtt } from '@/services/mqtt-client/mqtt';
 const OverviewPage: React.FC = () => {
-  const [humidity, setHumidity] = useState<any>(0);
-  const [temperature, setTemperature] = useState<any>(0);
-  const [moisture, setMoisture] = useState<any>(0);
+  const [humidity, setHumidity] = useState<any>(69);
+  const [temperature, setTemperature] = useState<any>(35);
+  const [moisture, setMoisture] = useState<any>(60);
 
-  useEffect(() => {
-    const fetchInitData = async () => {
-      const resHumid = await fetch(process.env.HUMID_ADAFRUIT as string);
-      const resTemp = await fetch(process.env.TEMPERATURE_ADAFRUIT as string);
-      const resMoisture = await fetch(process.env.MOISTURE_ADAFRUIT as string);
+  // useEffect(() => {
+  //   const fetchInitData = async () => {
+  //     const resHumid = await fetch(process.env.HUMID_ADAFRUIT as string);
+  //     const resTemp = await fetch(process.env.TEMPERATURE_ADAFRUIT as string);
+  //     const resMoisture = await fetch(process.env.MOISTURE_ADAFRUIT as string);
 
-      if (resHumid) {
-        const jsonData = await resHumid.json();
-        setHumidity(jsonData?.last_value);
-      }
-      if (resTemp) {
-        const jsonData = await resTemp.json();
-        setMoisture(jsonData?.last_value);
-      }
-      if (resMoisture) {
-        const jsonData = await resMoisture.json();
-        setMoisture(jsonData?.last_value);
-      }
-    };
-    fetchInitData();
-  }, []);
+  //     if (resHumid) {
+  //       const jsonData = await resHumid.json();
+  //       setHumidity(jsonData?.last_value);
+  //     }
+  //     if (resTemp) {
+  //       const jsonData = await resTemp.json();
+  //       setMoisture(jsonData?.last_value);
+  //     }
+  //     if (resMoisture) {
+  //       const jsonData = await resMoisture.json();
+  //       setMoisture(jsonData?.last_value);
+  //     }
+  //   };
+  //   fetchInitData();
+  // }, []);
 
   useEffect(() => {
     clientMqtt.on('connect', () => {
-      console.log('Connected');
-
+      console.log('Connected to Adafruit IO');
       clientMqtt.subscribe('kd77/feeds/humidity');
       clientMqtt.subscribe('kd77/feeds/temperature');
       clientMqtt.subscribe('kd77/feeds/moisture');
     });
 
+    // Handle incoming messages
     clientMqtt.on('message', (topic, message) => {
       console.log(
         `Received message from topic ${topic}: ${message.toString()}`
       );
       if (topic == 'kd77/feeds/humidity') {
         setHumidity(message.toString());
-      }
-      if (topic == 'kd77/feeds/temperature') {
+      } else if (topic == 'kd77/feeds/temperature') {
         setTemperature(message.toString());
+      } else if (topic == 'kd77/feeds/moisture') {
+        setMoisture(message.toString());
       }
     });
 
+    // Handle connection errors
     clientMqtt.on('error', (err) => {
       console.error('Connection error:', err);
     });
 
+    // Handle connection close
     clientMqtt.on('close', () => {
       console.log('Connection closed');
     });
@@ -97,8 +100,8 @@ const OverviewPage: React.FC = () => {
         </CardDataStats>
         <CardDataStats
           title="Other data"
-          total="3.456"
-          rate="0.95%"
+          total="NAN"
+          rate="%"
           levelDown>
           <svg
             className="fill-primary dark:fill-white"

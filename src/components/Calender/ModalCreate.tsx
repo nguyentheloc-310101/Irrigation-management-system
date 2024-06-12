@@ -74,9 +74,10 @@ export const ModalCreate = ({ open, setOpen }: ModalCreateCalendar) => {
 
       return;
     }
-    // console.log(data);
+    console.log(data);
 
     const jsonStringData = JSON.stringify(dataMqtt);
+
     clientMqtt.publish('kd77/feeds/scheduler', jsonStringData);
     message.success('Create scheduler successfully');
     setLoading(false);
