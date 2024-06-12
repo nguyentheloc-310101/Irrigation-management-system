@@ -212,7 +212,7 @@ export const ModalCreate = ({ open, setOpen }: ModalCreateCalendar) => {
                 />
               </Form.Item>
               <Form.Item
-                label="Active"
+                label="Frequency"
                 name="active"
                 rules={[
                   {
